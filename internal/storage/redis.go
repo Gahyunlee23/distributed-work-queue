@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -42,7 +43,7 @@ func (rs *RedisStorage) Set(ctx context.Context, key string, value []byte, ttl i
 
 func (rs *RedisStorage) Get(ctx context.Context, key string) ([]byte, error) {
 	value, err := rs.client.Get(ctx, key).Bytes()
-	if err == redis.Nil {
+	if errors.Is(err, redis.Nil) {
 		return nil, ErrKeyNotFound
 	}
 	return value, err
